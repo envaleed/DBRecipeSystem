@@ -10,7 +10,7 @@ def creation():
     f.write("use mealPlanner;\n")
     f.write("\n")
     f.write("create table user(\n")
-    f.write("userID varchar (10),\n")
+    f.write("userID int auto_increment,\n")
     f.write("primary key (userID),\n")
     f.write("userEmail varchar(30),\n")
     f.write("userFname varchar(30),\n")
@@ -23,9 +23,9 @@ def creation():
 def creation2():
     f = open("mealPlannerDB.sql","a")
     f.write("\ncreate table profile(\n")
-    f.write("userID varchar(10),\n")
+    f.write("userID int,\n")
     f.write("foreign key (userID) references user( userID) on delete cascade on update cascade,\n")
-    f.write("profileID varchar(10),\n")
+    f.write("profileID int auto_increment,\n")
     f.write("primary key (profileID),\n")
     f.write("sex varchar(10),\n")
     f.write("height decimal (5,2),\n")
@@ -38,7 +38,7 @@ def creation2():
 def creation3():
     f = open("mealPlannerDB.sql","a")
     f.write("\ncreate table recipe(\n")
-    f.write("RecipeID varchar(10),\n")
+    f.write("RecipeID int auto_increment,\n")
     f.write("primary key (RecipeID),\n")
     f.write("prepTime decimal (5,2),\n")
     f.write("recipeName varchar (30),\n")
@@ -50,7 +50,7 @@ def creation3():
 def creation4():
     f = open("mealPlannerDB.sql","a")
     f.write("\ncreate table meals (\n")
-    f.write("MealID varchar (10),\n")
+    f.write("MealID int auto_increment,\n")
     f.write("primary key (MealID),\n")
     f.write("calorieCount decimal (5,2),\n")
     f.write("mealImage varchar (100),\n")
@@ -63,7 +63,7 @@ def creation4():
 def creation5():
     f = open("mealPlannerDB.sql","a")
     f.write("\ncreate table mealPlan(\n")
-    f.write("mealPlanID varchar (10),\n")
+    f.write("mealPlanID int auto_increment,\n")
     f.write("day varchar (30),\n")
     f.write("primary key (mealPlanID),\n")
     f.write("totalCalorie decimal (5,2)\n")
@@ -75,7 +75,7 @@ def creation6():
     f = open("mealPlannerDB.sql","a")
     f.write("\ncreate table ingredients(\n")
     f.write("ingredientsName varchar(30),\n")
-    f.write("ingredientsNameID varchar(10),\n")
+    f.write("ingredientsNameID int auto_increment,\n")
     f.write("primary key (ingredientsNameID),\n")
     f.write("MeasurementValue decimal (5,2),\n")
     f.write("MeasurementType varchar (10),\n")
@@ -88,7 +88,7 @@ def creation7():
     f = open("mealPlannerDB.sql","a")
     f.write("\ncreate table instructions(\n")
     f.write("instructionName varchar (30),\n")
-    f.write("instructionNameID varchar (10),\n")
+    f.write("instructionNameID int auto_increment,\n")
     f.write("primary key (instructionNameID),\n")
     f.write("stepNum  int\n")
     f.write(");\n")
@@ -98,7 +98,7 @@ def creation7():
 def creation8():
     f = open("mealPlannerDB.sql","a")
     f.write("\ncreate table adds(\n")
-    f.write("userID varchar (10),\n")
+    f.write("userID int auto_increment,\n")
     f.write("primary key(userID),\n")
     f.write("creationDate date,\n")
     f.write("recipeName varchar(30)\n")
@@ -109,11 +109,11 @@ def creation8():
 def creation9():
     f = open("mealPlannerDB.sql","a")
     f.write("\ncreate table uses(\n")
-    f.write("recipeID varchar (10),\n")
+    f.write("recipeID int,\n")
     f.write("primary key ( recipeID,instructionNameID,ingredientsNameID),\n")
-    f.write("instructionNameID varchar (10),\n")
+    f.write("instructionNameID int,\n")
     f.write("foreign key (instructionNameID) references instructions(instructionNameID) on delete cascade on update cascade,\n")
-    f.write("ingredientsNameID varchar (10),\n")
+    f.write("ingredientsNameID int,\n")
     f.write("foreign key (ingredientsNameID) references ingredients(ingredientsNameID) on delete cascade on update cascade,\n")
     f.write("measurementType varchar (30)\n")
     f.write(");\n")
@@ -123,8 +123,8 @@ def creation9():
 def creation10():
     f = open("mealPlannerDB.sql","a")
     f.write("\ncreate table make(\n")
-    f.write("recipeID varchar (10),\n")
-    f.write("mealID varchar (10),\n")
+    f.write("recipeID int,\n")
+    f.write("mealID int auto_increment,\n")
     f.write("primary key ( mealID),\n")
     f.write("foreign key (recipeID) references recipe(recipeID) on delete cascade on update cascade,\n")
     f.write("mealName varchar (30)\n")
@@ -135,8 +135,8 @@ def creation10():
 def creation11():
     f = open("mealPlannerDB.sql","a")
     f.write("\ncreate table generates(\n")
-    f.write("mealID varchar(10),\n")
-    f.write("mealPlanID varchar (10),\n")
+    f.write("mealID int,\n")
+    f.write("mealPlanID int,\n")
     f.write("primary key (MealID,mealPLanID),\n")
     f.write("foreign key (mealPlanID) references mealPlan(mealPLanID) on delete cascade on update cascade,\n")
     f.write("foreign key (mealID) references meals(mealID) on delete cascade on update cascade\n")
@@ -144,18 +144,31 @@ def creation11():
     f.write("\n")
     f.close()
 
+def creation12():
+     f = open("mealPlannerDB.sql","a")
+     f.write("\ncreate table kitchen(\n")
+     f.write("userID int,\n")
+     f.write("ingredientsName varchar(30),\n")
+     f.write("ingredientsNameID int,\n")
+     f.write("measurementType varchar(30),\n")
+     f.write("measurementValue decimal,\n")
+     f.write("primary key (userID,ingredientsNameID),\n")
+     f.write("foreign key (userID) references user(userID) on delete cascade on update cascade,\n")
+     f.write("foreign key (ingredientsNameID) references ingredients(ingredientsNameID)\n")
+     f.write(");\n")
+     f.write("\n")
+     f.close()
+
 
 def user():
-    id=0
     f = open("mealPlannerDB.sql","a")
     f.write("insert into user(userID,userEmail,userFname,userLname,userPassword)values\n")
     for i in range(150000):
-        id+=1
         fname=fake.first_name()
         lname=fake.last_name()
         email = fake.email()
         password= fake.password()
-        f.write('('+ '"' + str(id) + '",' +'"'+email+'",'+ '"' + fname + '",'+ '"' + lname+'",'+'"'+password+'"'+ ')')
+        f.write('('+ '"' + '",' +'"'+email+'",'+ '"' + fname + '",'+ '"' + lname+'",'+'"'+password+'"'+ ')')
         if i==149999:
             f.write(';\n')
             f.close()
@@ -165,7 +178,6 @@ def user():
 
 def profile():
     userId=0
-    profileId=0
     gender=["male","female"]
     preferences=["fish","chicken","vegetable","pork","vegie chunks","tofu"]
     f= open("mealPlannerDB.sql","a")
@@ -173,12 +185,12 @@ def profile():
     f.write("insert into profile(userID,profileID,sex,height,weight,mealTypePreference)values\n")
     for i in range(150000):
         userId+=1
-        profileId+=1
         sex=random.choice(gender)
         height=random.choice(range(130, 200, 1))
         weight=random.choice(range(90,250,1))
         mealTypePreference=random.choice(preferences)
-        f.write('('+'"'+str(userId)+'",'+'"'+str(profileId)+'",'+'"'+sex+'",'+'"'+str(height)+'",'+'"'+str(weight)+'",'+'"'+mealTypePreference+'"'+')')
+        f.write('({},'.format(userId))
+        f.write('"'+'",'+'"'+sex+'",'+'"'+str(height)+'",'+'"'+str(weight)+'",'+'"'+mealTypePreference+'"'+')')
         if i==149999:
             f.write(';\n')
             f.close()
@@ -186,17 +198,15 @@ def profile():
             f.write(',\n')
 
 def recipe():
-    recipeId=0
     recipe=["Cocoa Trifle","Mint Mooncake","Guava Jam","Cherry Fudge","Cashew Wafer","Elderberry Buns"]
     f=open("mealPlannerDB.sql","a")
     f.write("\n")
     f.write("insert into recipe(recipeID,prepTime,recipeName,creationDate)values\n")
     for i in range(550000):
-        recipeId+=1
         prepTime=random.choice(range(10,60,1))
         recipeName=random.choice(recipe)
         creationDate=fake.date()
-        f.write('('+'"'+str(recipeId)+'",'+'"'+str(prepTime)+'",'+'"'+recipeName+'",'+'"'+creationDate+'"'+')')
+        f.write('('+'"'+'",'+'"'+str(prepTime)+'",'+'"'+recipeName+'",'+'"'+creationDate+'"'+')')
         if i==549999:
             f.write(';\n')
             f.close()
@@ -206,18 +216,18 @@ def recipe():
 
 
 def meals():
-    mealId=0
+    img=["C:\pics\img1.jpg","C:\pics\img2.jpg","C:\pics\img3.jpg","C:\pics\img4.jpg","C:\pics\img5.jpg","C:\pics\img6.jpg","C:\pics\img7.jpg","C:\pics\img8.jpg","C:\pics\img9.jpg","C:\pics\img10.jpg","C:\pics\img11.jpg","C:\pics\img12.jpg","C:\pics\img13.jpg","C:\pics\img14.jpg","C:\pics\img15.jpg","C:\pics\img16.jpg","C:\pics\img17.jpg","C:\pics\img18.jpg","C:\pics\img19.jpg","C:\pics\img20.jpg"]
     name=["Kiclete Bread","Dragon Pudding","Moss Paprika Roll","Ethereal Rice & Split","Wolpertinger Yogurt","Basilisk Ice Lollies","Osibola Buns"]
     ntype=["Breakfast","Second breakfast","Elevenses","Brunch","Lunch","Supper","Dinner","Snack","Value meal"]
     f=open("mealPlannerDB.sql","a")
     f.write("\n")
     f.write("insert into meals(mealID,calorieCount,mealImage,mealName,mealType)values\n")
     for i in range (150000):
-        mealId+=1
         calorieCount=random.choice(range(10,300,1))
         mealName=random.choice(name)
         mealType=random.choice(ntype)
-        f.write('('+'"'+str(mealId)+'",'+'"'+str(calorieCount)+'",'+'"'+'",'+'"'+mealName+'",'+'"'+mealType+'"'+')')
+        imgc=random.choice(img)
+        f.write('('+'"'+'",'+'"'+str(calorieCount)+'",'+'"'+imgc+'",'+'"'+mealName+'",'+'"'+mealType+'"'+')')
         if i==149999:
             f.write(';\n')
             f.close()
@@ -226,16 +236,14 @@ def meals():
     
             
 def mealPlan():
-    mealplanId=0
     days=["sunday","monday","tuesday","wednesday","thursday","friday","saturday"]
     f=open("mealPlannerDB.sql","a")
     f.write("\n")
     f.write("insert into mealPlan(mealPlanID,day,totalCalorie)values\n")
     for i in range (150000):
-        mealplanId+=1
         day=random.choice(days)
         totalCalorie=random.choice(range(10,200,1))
-        f.write('('+'"'+str(mealplanId)+'",'+'"'+day+'",'+'"'+str(totalCalorie)+'"'+')')
+        f.write('('+'"'+'",'+'"'+day+'",'+'"'+str(totalCalorie)+'"'+')')
         if i==149999:
             f.write(';\n')
             f.close()
@@ -245,18 +253,16 @@ def mealPlan():
 
 
 def ingredients():
-    inID=0
     mtype=["teaspoon","tablespoon","gill","cup","pint","quart","gallon","pound","ounce","mg","kg","mm","inch"]
     f=open("mealPlannerDB.sql","a")
     f.write("\n")
     f.write("insert into ingredients(ingredientsNameID,ingredientsName,measurementValue,measurementType,ingredCalorie)values\n")
     for i in range (150000):
-        inID+=1
         ingredname=fake.word()
         mv=random.choice(range(1,200,1))
         measuret=random.choice(mtype)
         incalorie=random.choice(range(1,200,1))
-        f.write('('+'"'+str(inID)+'",'+'"'+ingredname+'",'+'"'+str(mv)+'",'+'"'+measuret+'",'+'"'+str(incalorie)+'"'+')')
+        f.write('('+'"'+'",'+'"'+ingredname+'",'+'"'+str(mv)+'",'+'"'+measuret+'",'+'"'+str(incalorie)+'"'+')')
         if i==149999:
             f.write(';\n')
             f.close()
@@ -267,15 +273,13 @@ def ingredients():
     
 
 def instructions():
-    sid=0
     f=open("mealPlannerDB.sql","a")
     f.write("\n")
     f.write("insert into instructions(instructionNameID,instructionName,stepNum)values\n")
     for i in range (150000):
-        sid+=1
         struct=fake.word()
         snum=random.choice(range(1,50,1))
-        f.write('('+'"'+str(sid)+'",'+'"'+struct+'",'+'"'+str(snum)+'"'+')')
+        f.write('('+'"'+'",'+'"'+struct+'",'+'"'+str(snum)+'"'+')')
         if i==149999:
             f.write(';\n')
             f.close()
@@ -293,7 +297,7 @@ def generates():
     for i in range (150000):
         mealId+=1
         plnid+=1
-        f.write('('+'"'+str(mealId)+'",'+'"'+str(plnid)+'"'+')')
+        f.write('({0:},{1:})'.format(mealId,plnid))
         if i==149999:
             f.write(';\n')
             f.close()
@@ -302,16 +306,14 @@ def generates():
     
 
 def adds():
-    userId=0
     recipe=["Cocoa Trifle","Mint Mooncake","Guava Jam","Cherry Fudge","Cashew Wafer","Elderberry Buns"]
     f=open("mealPlannerDB.sql","a")
     f.write("\n")
     f.write("insert into adds(userID,creationDate,recipeName)values\n")
     for i in range (150000):
-        userId+=1
         cd=fake.date()
         rn=random.choice(recipe)
-        f.write('('+'"'+str(userId)+'",'+'"'+str(cd)+'",'+'"'+rn+'"'+')')
+        f.write('('+'"'+'",'+'"'+str(cd)+'",'+'"'+rn+'"'+')')
         if i==149999:
             f.write(';\n')
             f.close()
@@ -321,16 +323,15 @@ def adds():
 
 def makes():
     rid=0
-    mid=0
     name=["Kiclete Bread","Dragon Pudding","Moss Paprika Roll","Ethereal Rice & Split","Wolpertinger Yogurt","Basilisk Ice Lollies","Osibola Buns"]
     f=open("mealPlannerDB.sql","a")
     f.write("\n")
     f.write("insert into make(recipeID,mealID,mealName)values\n")
     for i in range (150000):
         rid+=1
-        mid+=1
         nm=random.choice(name)
-        f.write('('+'"'+str(rid)+'",'+'"'+str(mid)+'",'+'"'+nm+'"'+')')
+        f.write('({}'.format(rid))
+        f.write(',"'+'",'+'"'+nm+'"'+')')
         if i==149999:
             f.write(';\n')
             f.close()
@@ -349,7 +350,28 @@ def uses():
         insid+=1
         ingid+=1
         r=random.choice(mtype)
-        f.write('('+'"'+str(rid)+'",'+'"'+str(insid)+'",'+'"'+str(ingid)+'",'+'"'+r+'"'+')')
+        f.write('({0:},{1:},{2:}'.format(rid,insid,ingid))
+        f.write(',"'+r+'"'+')')
+        if i==149999:
+            f.write(';\n')
+            f.close()
+        else:
+            f.write(',\n')
+
+def kitchen():
+    uid=0
+    iid=0
+    mtype=["teaspoon","tablespoon","gill","cup","pint","quart","gallon","pound","ounce","mg","kg","mm","inch"]
+    f=open("mealPlannerDB.sql","a")
+    f.write("\n")
+    f.write("insert into kitchen(userID,ingredientsName,ingredientsNameID,measurementType, measurementValue)values\n")
+    for i in range (150000):
+        uid+=1
+        iid+=1
+        ingredname=fake.word()
+        mv=random.choice(range(1,200,1))
+        r=random.choice(mtype)
+        f.write('('+'"'+str(uid)+'",'+'"'+ingredname+'",'+'"'+str(iid)+'",'+'"'+r+'",'+'"'+str(mv)+'"'+')')
         if i==149999:
             f.write(';\n')
             f.close()
@@ -379,3 +401,5 @@ def doAll():
     makes()
     creation11()
     generates()
+    creation12()
+    kitchen()
