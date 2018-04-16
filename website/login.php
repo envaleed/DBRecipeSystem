@@ -10,7 +10,7 @@ if ( $result->num_rows == 0 ){
 else { 
     $user = $result->fetch_assoc();
 
-    if ( ($_POST['password'] == $user['userPassword']) ) {
+    if ($_POST['password'] == $user['userPassword']){
         
         $_SESSION['email'] = $user['userEmail'];
         $_SESSION['first_name'] = $user['userFname'];
@@ -18,7 +18,9 @@ else {
         
         $_SESSION['logged_in'] = true;
 
+        $_SESSION['message'] = "You have been successfully logged in";
         header("location: profile.php");
+
     }
     else {
         $_SESSION['message'] = "You have entered wrong password, try again!";
