@@ -11,6 +11,7 @@ else {
     $first_name = $_SESSION['first_name'];
     $last_name = $_SESSION['last_name'];
     $email = $_SESSION['email'];
+    $userID = $mysqli->query("select userID from users where userEmail ='$email'");
 }
 ?>
 <!DOCTYPE html>
@@ -149,7 +150,12 @@ else {
         {
           if(isset($_POST['sex_btn'])) {
               $gender = $_POST['sex_rslt'];
-              $result = $mysqli->query(""); 
+              $result = $mysqli->query("select sex from user join `profile` on profile.userID =user.userID where profile.userID=1; "); 
+              $sex = array();
+  //       if ($temp->num_rows > 0) {
+  //         while ($row = $temp->fetch_assoc()) 
+  // {      $recipe_name[] = $row['recipeName'];
+  //         }
             }              
           }
         ?>      
@@ -173,24 +179,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
   if(isset($_POST['search_btn'])) {
       $recipe_name = $_POST['search_rslt'];
-      $temp = $mysqli->query("SELECT * FROM recipe WHERE recipeName LIKE '$recipe_name'"); 
-      $recipe_name = array();
+      $temp = $mysqli->query("SELECT * FROM recipe WHERE recipeName LIKE '{$recipe_name}' ORDER BY `creationDate` ASC LIMIT 1"); 
+      $recipe_name = [];
       if ($temp->num_rows > 0) {
-          while ($row = $temp->fetch_assoc()) 
-  {      $recipe_name[] = $row['recipeName'];
-          }
-}
+         echo"<h4>Recipes found are:</h4>";
+        while ($row = $temp->fetch_assoc()) {
+          echo "<div><a href='#'>{$row['recipeName']} - {$row['creationDate']}</a></div>";
+        }
+      }
 ?>
 
-<h4>Recipes found are:</h4>
-
 <?php
-       foreach($recipe_name as $name) {
-  
-           echo "<div><a href=\"\">$name</a></div>";
-          }
-      }
-      else {
+      } else {
         echo "Not found";
       }
   }
@@ -204,7 +204,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     <div class="col-1">            
     </div>
     <div class="col-10 col">  
-      <h2>Kitchen</h2>   
+      <h2>Meal</h2>   
+      <?php
+      $path="img/picsimg8.jpg";
+      echo'<img src="img/picsimg8.jpg"'.'" height="50" width="50">'
+
+  
+        ?>
     </div>
   </div>
 
@@ -214,10 +220,337 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     <div class="col-1">            
     </div>
     <div class="col-10 col">  
-      <h2>Meal</h2>   
+      <h2>Generate Meal</h2> 
+      <form action="profile.php" method="post" accept-charset="utf-8" autocomplete="off">
+        <input type="number" name="calorie_count_rslt" placeholder="Calorie Number">
+        <button type="submit" name="calorie_count_btns"><b>Submit</b></button>
+      </form> 
+
+      <?php 
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') 
+      {
+        if(isset($_POST['calorie_count_btns'])) {
+            $calorie_count = $_POST['calorie_count_rslt'];
+            $temp = $mysqli->query("SELECT * FROM meals WHERE calorieCount <= '$calorie_count'"); 
+            $meal = array();
+            if ($temp->num_rows > 0) {
+              echo "<h6>Meals found are:</h6>";
+                while ($row = $temp->fetch_assoc()) 
+              {  $meal = $row['mealName'];
+                echo "<div>$meal</div>";
+                }
+      }
+            else{
+              echo"<h6>Meal not found</h6>";
+            }
+          }
+          }
+      ?>
     </div>
   </div>
-          
+  <br>
+
+   <div class="row">   
+    <div class="col-1">            
+    </div>
+    <div class="col-10 col">  
+      <h2>Meal Plan</h2>   
+      <?php
+      echo"<h3>Monday</h3>";
+       $temp = $mysqli->query("select distinct mealName, calorieCount from meals where mealType='Breakfast' order by rand() limit 1;"); 
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      $plan = $row['mealName'];
+        $planb = $row['calorieCount'];
+          }
+          echo"<h4>Breakfast</h4>";
+          echo"$plan";
+          echo" [Calories: $planb]";
+
+       $temp = $mysqli->query("select distinct mealName, calorieCount from meals where mealType='Lunch' order by rand() limit 1;"); 
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      $plan = $row['mealName'];
+        $planb = $row['calorieCount'];
+          }
+          echo"<h4>Breakfast</h4>";
+          echo"$plan";
+          echo" [Calories: $planb]";
+        }
+
+      $temp = $mysqli->query("select distinct mealName, calorieCount from meals where mealType='Dinner' order by rand() limit 1;"); 
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      $plan = $row['mealName'];
+          $planb = $row['calorieCount'];
+          }
+          echo"<h4>Lunch</h4>";
+          echo"$plan";
+          echo" [Calories: $planb]";
+        }
+}
+
+              echo"<h3>Tuesday</h3>";
+       $temp = $mysqli->query("select distinct mealName, calorieCount from meals where mealType='Breakfast' order by rand() limit 1;"); 
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      $plan = $row['mealName'];
+          $planb = $row['calorieCount'];
+          }
+          echo"<h4>Breakfast</h4>";
+          echo"$plan";
+          echo" [Calories: $planb]";
+
+      $temp = $mysqli->query("select distinct mealName, calorieCount from meals where mealType='Lunch' order by rand() limit 1;"); 
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      $plan = $row['mealName'];
+          $planb = $row['calorieCount'];
+          }
+          echo"<h4>Lunch</h4>";
+          echo"$plan";
+          echo" [Calories: $planb]";
+        }
+
+        $temp = $mysqli->query("select distinct mealName, calorieCount from meals where mealType='Breakfast' order by rand() limit 1;"); 
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      $plan = $row['mealName'];
+          $planb = $row['calorieCount'];
+          }
+          echo"<h4>Dinner</h4>";
+          echo"$plan";
+          echo" [Calories: $planb]";
+        }
+}
+              echo"<h3>Wednesday</h3>";
+       $temp = $mysqli->query("select distinct mealName, calorieCount from meals where mealType='Breakfast' order by rand() limit 1;"); 
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      $plan = $row['mealName'];
+          $planb = $row['calorieCount'];
+          }
+          echo"<h4>Breakfast</h4>";
+          echo"$plan";
+          echo" [Calories: $planb]";
+
+      $temp = $mysqli->query("select distinct mealName, calorieCount from meals where mealType='Lunch' order by rand() limit 1;"); 
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      $plan = $row['mealName'];
+          $planb = $row['calorieCount'];
+          }
+          echo"<h4>Lunch</h4>";
+          echo"$plan";
+          echo" [Calories: $planb]";
+        }
+
+        $temp = $mysqli->query("select distinct mealName, calorieCount from meals where mealType='Breakfast' order by rand() limit 1;"); 
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      $plan = $row['mealName'];
+          $planb = $row['calorieCount'];
+          }
+          echo"<h4>Dinner</h4>";
+          echo"$plan";
+          echo" [Calories: $planb]";
+        }
+}
+
+              echo"<h3>Thursday</h3>";
+       $temp = $mysqli->query("select distinct mealName, calorieCount from meals where mealType='Breakfast' order by rand() limit 1;"); 
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      $plan = $row['mealName'];
+          $planb = $row['calorieCount'];
+          }
+          echo"<h4>Breakfast</h4>";
+          echo"$plan";
+          echo" [Calories: $planb]";
+
+      $temp = $mysqli->query("select distinct mealName, calorieCount from meals where mealType='Lunch' order by rand() limit 1;"); 
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      $plan = $row['mealName'];
+          $planb = $row['calorieCount'];
+          }
+          echo"<h4>Lunch</h4>";
+          echo"$plan";
+          echo" [Calories: $planb]";
+        }
+
+        $temp = $mysqli->query("select distinct mealName, calorieCount from meals where mealType='Breakfast' order by rand() limit 1;"); 
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      $plan = $row['mealName'];
+          $planb = $row['calorieCount'];
+          }
+          echo"<h4>Dinner</h4>";
+          echo"$plan";
+          echo" [Calories: $planb]";
+        }
+}
+
+              echo"<h3>Friday</h3>";
+       $temp = $mysqli->query("select distinct mealName, calorieCount from meals where mealType='Breakfast' order by rand() limit 1;"); 
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      $plan = $row['mealName'];
+          $planb = $row['calorieCount'];
+          }
+          echo"<h4>Breakfast</h4>";
+          echo"$plan";
+          echo" [Calories: $planb]";
+
+      $temp = $mysqli->query("select distinct mealName, calorieCount from meals where mealType='Lunch' order by rand() limit 1;"); 
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      $plan = $row['mealName'];
+          $planb = $row['calorieCount'];
+          }
+          echo"<h4>Lunch</h4>";
+          echo"$plan";
+          echo" [Calories: $planb]";
+        }
+
+        $temp = $mysqli->query("select distinct mealName, calorieCount from meals where mealType='Breakfast' order by rand() limit 1;"); 
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      $plan = $row['mealName'];
+          $planb = $row['calorieCount'];
+          }
+          echo"<h4>Dinner</h4>";
+          echo"$plan";
+          echo" [Calories: $planb]";
+        }
+}         
+                echo"<h3>Saturday</h3>";
+       $temp = $mysqli->query("select distinct mealName, calorieCount from meals where mealType='Breakfast' order by rand() limit 1;"); 
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      $plan = $row['mealName'];
+          $planb = $row['calorieCount'];
+          }
+          echo"<h4>Breakfast</h4>";
+          echo"$plan";
+          echo" [Calories: $planb]";
+
+      $temp = $mysqli->query("select distinct mealName, calorieCount from meals where mealType='Lunch' order by rand() limit 1;"); 
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      $plan = $row['mealName'];
+          $planb = $row['calorieCount'];
+          }
+          echo"<h4>Lunch</h4>";
+          echo"$plan";
+          echo" [Calories: $planb]";
+        }
+
+        $temp = $mysqli->query("select distinct mealName, calorieCount from meals where mealType='Breakfast' order by rand() limit 1;"); 
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      $plan = $row['mealName'];
+          $planb = $row['calorieCount'];
+          }
+          echo"<h4>Dinner</h4>";
+          echo"$plan";
+          echo" [Calories: $planb]";
+        }
+}
+              echo"<h3>Sunday</h3>";
+       $temp = $mysqli->query("select distinct mealName, calorieCount from meals where mealType='Breakfast' order by rand() limit 1;"); 
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      $plan = $row['mealName'];
+          $planb = $row['calorieCount'];
+          }
+          echo"<h4>Breakfast</h4>";
+          echo"$plan";
+          echo" [Calories: $planb]";
+
+      $temp = $mysqli->query("select distinct mealName, calorieCount from meals where mealType='Lunch' order by rand() limit 1;"); 
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      $plan = $row['mealName'];
+          $planb = $row['calorieCount'];
+          }
+          echo"<h4>Lunch</h4>";
+          echo"$plan";
+          echo" [Calories: $planb]";
+        }
+
+        $temp = $mysqli->query("select distinct mealName, calorieCount from meals where mealType='Breakfast' order by rand() limit 1;"); 
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      $plan = $row['mealName'];
+          $planb = $row['calorieCount'];
+          }
+          echo"<h4>Dinner</h4>";
+          echo"$plan";
+          echo" [Calories: $planb]";
+        }
+}
+        ?>
+    </div>
+  </div>
+
+<br>
+   <div class="row">   
+    <div class="col-1">            
+    </div>
+    <div class="col-10 col">  
+      <h2>Kitchen</h2> 
+      <?php
+      echo"<h3>Kitchen List</h3>";
+       $temp = $mysqli->query("SELECT * from kitchen where userID=1;"); 
+       // print_r($temp)
+      $plan = array();
+      if ($temp->num_rows > 0) {
+          while ($row = $temp->fetch_assoc()) 
+  {      echo "<div> Measurement Value {$row ['measurementValue']} Measurement Type: {$row['measurementType']} Ingredient Name: {$row['ingredientsName']}  </div>";
+        }
+      }
+?>
+      </div>
+      </div>
+
+      <br>
+
+    <div class="row">   
+    <div class="col-1">            
+    </div>
+    <div class="col-10 col">  
+      <h2>Add Recipe</h2> 
+      <form action="profile.php" method="post" accept-charset="utf-8">
+        <input type="text" name="preptime" placeholder="Prep Time">
+        <input type="text" name="recipeName" placeholder="recipe Name">
+        <input type="date" name="creationDate" placeholder="Creation Date">
+        <button type="submit"><b></b></button>
+      </form>
+    </div>
+    </div>  
+ 
     
 <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
 <script src="js/index.js"></script>
