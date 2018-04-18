@@ -11,7 +11,20 @@ else {
     $first_name = $_SESSION['first_name'];
     $last_name = $_SESSION['last_name'];
     $email = $_SESSION['email'];
-    $userID = $mysqli->query("select userID from users where userEmail ='$email'");
+    $val = $mysqli->query("select userID from user where userEmail ='$email'");
+            $meal = array();
+            if ($val->num_rows > 0) {
+          
+                while ($row = $val->fetch_assoc()) 
+              {  $meal = $row['userID'];
+
+                echo "<div>$meal</div>";
+                $userID=$meal;
+                }
+      }
+    
+
+
 }
 ?>
 <!DOCTYPE html>
@@ -130,35 +143,46 @@ else {
     <div class="col-1">            
     </div>
     <div class="col-10 col"> 
-    <h2>Profile</h2> 
+        
+        <h2>Profile</h2> 
         <form action="profile.php" method="post" autocomplete="off">
-          <h4><?php echo 'Sex:'.' '; ?></h4>
-          <input type="text" name="sex_rslt" placeholder="Update Sex">
-          <button type="submit" name="sex_btn"><b>Submit</b></button>
-          <h4><?php echo 'Weight:'.' '; ?></h4>
           <input type="text" name="weight_rslt" placeholder="Update Weight">
           <button type="submit" name="weight_btn"><b>Submit</b></button>
-          <h4><?php echo 'Height:'.' '; ?></h4>
+          <?php 
+          $result = $mysqli->query("select weight from `profile` where userID='$userID'; "); 
+          if ($result->num_rows > 0) {
+          while ($row = $result->fetch_assoc()) 
+        { $weight = $row['weight'];
+        echo"<div> <h4>Current weight: {$row ['weight']} </h4></div>";
+          }
+        }
+                       
+        ?>  
           <input type="text" name="height_rslt" placeholder="Update Height">
           <button type="submit" name="height_btn"><b>Submit</b></button>
-          <h4><?php echo 'Meal Preference:'.' '; ?></h4> 
+          <?php 
+          $result = $mysqli->query("select height from `profile` where userID='$userID'; "); 
+          if ($result->num_rows > 0) {
+          while ($row = $result->fetch_assoc()) 
+        { $height = $row['height'];
+        echo"<div> <h4>Current weight: {$row ['height']} </h4></div>";
+          }
+        }
+                       
+        ?> 
           <input type="text" name="preference_rslt" placeholder="Update Meal Preference">
           <button type="submit" name="preference_btn"><b>Submit</b></button>
-        </form>
-        <?php 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') 
-        {
-          if(isset($_POST['sex_btn'])) {
-              $gender = $_POST['sex_rslt'];
-              $result = $mysqli->query("select sex from user join `profile` on profile.userID =user.userID where profile.userID=1; "); 
-              $sex = array();
-  //       if ($temp->num_rows > 0) {
-  //         while ($row = $temp->fetch_assoc()) 
-  // {      $recipe_name[] = $row['recipeName'];
-  //         }
-            }              
+          <?php 
+          $result = $mysqli->query("select mealTypePreference from `profile` where userID='$userID'; "); 
+          if ($result->num_rows > 0) {
+          while ($row = $result->fetch_assoc()) 
+        { $mealTypePreference = $row['mealTypePreference'];
+        echo"<div> <h4>Current Meal Preference: {$row ['mealTypePreference']} </h4></div>";
           }
-        ?>      
+        }
+                       
+        ?> 
+        </form>    
     </div>
   </div>
 
@@ -184,7 +208,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
       if ($temp->num_rows > 0) {
          echo"<h4>Recipes found are:</h4>";
         while ($row = $temp->fetch_assoc()) {
-          echo "<div><a href='#'>{$row['recipeName']} - {$row['creationDate']}</a></div>";
+          echo "<div><a href='recipetemplate.html'>{$row['recipeName']} - {$row['creationDate']}</a></div>";
         }
       }
 ?>
@@ -204,10 +228,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     <div class="col-1">            
     </div>
     <div class="col-10 col">  
-      <h2>Meal</h2>   
+      <h2>Your Current Meal Image</h2>   
       <?php
-      $path="img/picsimg8.jpg";
-      echo'<img src="img/picsimg8.jpg"'.'" height="50" width="50">'
+      $path="img/img2.jpg";
+      echo'<img src='.$path.' height="250" width="250">'
+      ?>
+      <form action="profile.php" method="post" accept-charset="utf-8" autocomplete="off" enctype="multipart/form-data">
+        <div><p></p></div>
+        <input type="file" name="img">
+        <input type="submit" name="img_submit_btn">
+      
+      </form>
+      <?php 
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') 
+      {
+        if(isset($_POST['img_submit_btn'])) {
+          $doc_name = $_FILES['img']['name'];
+          $directory = 'img/';
+          $target_file = $directory.$doc_name;
+          $mysqli->query("update meal set mealImage='$path' where mealID=UserID");
+
+        }
+      }
 
   
         ?>
@@ -523,8 +565,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
       <h2>Kitchen</h2> 
       <?php
       echo"<h3>Kitchen List</h3>";
-       $temp = $mysqli->query("SELECT * from kitchen where userID=1;"); 
-       // print_r($temp)
+       $temp = $mysqli->query("SELECT * from kitchen where userID='$userID';"); 
       $plan = array();
       if ($temp->num_rows > 0) {
           while ($row = $temp->fetch_assoc()) 
@@ -546,14 +587,82 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         <input type="text" name="preptime" placeholder="Prep Time">
         <input type="text" name="recipeName" placeholder="recipe Name">
         <input type="date" name="creationDate" placeholder="Creation Date">
-        <button type="submit"><b></b></button>
+        <button type="submit" name="addRecipeBtn" onclick="myFunction()""><b>Submit</b></button>
+        <p id="demo"></p>
       </form>
+    </div>
+    </div>  
+    <?php 
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') 
+{
+  if(isset($_POST['addRecipeBtn'])) {
+      $preptime = $_POST['preptime'];
+      $recipename = $_POST['recipeName'];
+      $creationdate = $_POST['creationDate'];
+      $temp = $mysqli->query("call AddRecipe($preptime,$recipename,$creationdate);"); 
+      }
+    }
+     ?>
+   </div>
+  </div>
+
+  <br>
+
+    <div class="row">   
+    <div class="col-1">            
+    </div>
+    <div class="col-10 col">  
+      <h2>Instructions</h2> 
+      <?php 
+        echo "<div><h4>Enter an instruction ID to get an instruction name</h4></div>";
+       ?>
+      <form action="profile.php" method="post" accept-charset="utf-8">
+       <input type="number" name="numval">
+       <button type="submit" name="numval_btn"><b>Submit</b></button>
+      </form>
+      <?php 
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+          if(isset($_POST['numval_btn'])) {
+            $num = $_POST['numval'];
+            $ins=$mysqli->query("call ShowInstructions($num)");
+        while ($row = $ins->fetch_assoc()) {
+          $val=$row['instructionName'];
+          echo "<div><h6>This is the instruction assigned to the ID number entere: $val</h6></div>";
+        }
+        }
+      }
+       ?>
+       
+    </div>
+    </div>  
+
+    <br>
+
+      <div class="row">   
+    <div class="col-1">            
+    </div>
+    <div class="col-10 col">  
+      <h2>Your Current Grocery List </h2> 
+      <?php
+          echo "<div><h5>You currently do not have any items in your grocery list</h5></div>";
+        $gro=$mysqli->query("select * from grocerylist;");
+        while ($row = $gro->fetch_assoc()) {
+          $list=$row['ingredientsName'];
+          echo "$list";
+
+        }
+      ?>
     </div>
     </div>  
  
     
 <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
 <script src="js/index.js"></script>
+<script>
+function myFunction() {
+    document.getElementById("demo").innerHTML = "Database was updated sucessfully";
+}
+</script>
 
 </body>
 </html>
